@@ -7,7 +7,7 @@ interface Props {
 
 export const HotelFilter: FC<Props> = ({ className = `` }) => {
 	return (
-		<div className={"flex flex-col gap-4 pt-5 " + className}>
+		<div className={"flex flex-col gap-4  " + className}>
 			<FilterGroup
 				title="Тип размещения"
 				name="placement"
@@ -62,6 +62,24 @@ export const HotelFilter: FC<Props> = ({ className = `` }) => {
 					{ text: "Бассейн", value: "8" },
 					{ text: "Спортзал", value: "9" },
 					{ text: "Спа", value: "10" },
+				]}
+			/>
+			<FilterGroup
+				title="Питание"
+				name="food"
+				items={[
+					{ text: "Завтрак включен", value: "1" },
+					{ text: "Ресторан на территории", value: "2" },
+					{ text: "Бар", value: "3" },
+				]}
+			/>
+			<FilterGroup
+				title="Особенности"
+				name="special"
+				items={[
+					{ text: "Размещение с животными", value: "1" },
+					{ text: "Для людей с ограниченными возможностями", value: "2" },
+	
 				]}
 			/>
 		</div>
