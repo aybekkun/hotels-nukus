@@ -4,13 +4,12 @@ import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
 import { prisma } from "../../../../../prisma/prisma-client";
 
-
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Используйте .env для реальных проектов!
 
 export async function POST(request: NextRequest) {
 	try {
 		const { phone, password } = await request.json();
-
+		console.log(JWT_SECRET);
 		// Поиск пользователя
 		const user = await prisma.user.findUnique({
 			where: { phone },
@@ -42,10 +41,10 @@ export async function POST(request: NextRequest) {
 		cookies().set({
 			name: "auth-token",
 			value: token,
-		//	httpOnly: true,
+			//	httpOnly: true,
 			path: "/",
-			secure: process.env.NODE_ENV === "production",
-			maxAge: 60 * 60 * 24*30, // 30 день
+			// secure: process.env.NODE_ENV === "production",
+			maxAge: 60 * 60 * 24 * 30, // 30 день
 		});
 
 		// Не отправляем пароль в ответе
