@@ -1,10 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { prisma } from "../../../../../prisma/prisma-client";
 
-const prisma = new PrismaClient();
+
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Используйте .env для реальных проектов!
 
 export async function POST(request: NextRequest) {
