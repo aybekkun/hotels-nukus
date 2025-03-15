@@ -21,7 +21,7 @@ export const Navbar: FC<Props> = ({ className = `` }) => {
 						<p className="text-sm text-gray-400 leading-3">топ отели в городе</p>
 					</div>
 				</Link>
-				<SearchHotel />
+				<SearchHotel className="md:block hidden"/>
 				<UserButtonGroup />
 			</Container>
 		</div>

@@ -13,28 +13,30 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "../ui";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Heart } from "lucide-react";
 
 interface Props {
 	className?: string;
-	// name?: string;
-	// images?: string[];
-	// price?: number;
-	// description?: string;
+	id: number;
+	name: string;
+	images?: string[];
+	minPrice: number;
+	description: string;
 }
-const images = [
-	"https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-	"https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg?auto=compress&cs=tinysrgb&w=600",
-	"https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=600",
-];
 
-export const HotelCard: FC<Props> = ({ className = `` }) => {
+export const HotelCard: FC<Props> = ({ id, name, images = [], minPrice = 0, className = `` }) => {
 	return (
-		<Card className={className}>
+		<Card className={cn("relative", className)}>
+			<Button variant={"outline"} size={"icon"} className="absolute top-2  opacity-45 right-2 z-10 rounded-full">
+				<Heart />
+			</Button>
 			<Carousel>
 				<CarouselContent>
-					{images.map((image, index) => (
+					{images.slice(0, 4).map((image, index) => (
 						<CarouselItem key={index}>
-							<img src={image} className="w-full h-48 object-cover rounded-lg" />
+							<img src={image} alt={name} className="w-full aspect-video h-48 object-cover rounded-lg" />
 						</CarouselItem>
 					))}
 				</CarouselContent>
@@ -42,16 +44,18 @@ export const HotelCard: FC<Props> = ({ className = `` }) => {
 				<CarouselNext className="right-0" variant={"ghost"} />
 			</Carousel>
 			<CardHeader>
-				<CardTitle>Zasma & co</CardTitle>
+				<CardTitle>{name}</CardTitle>
 			</CardHeader>
 			<CardContent>
 				<CardDescription>Очень удоьный отель всеми удобствами</CardDescription>
 			</CardContent>
 			<CardFooter className="flex items-center justify-between">
 				<span className="text-sm font-bold">
-					1 300 000 <span className="text-sm font-normal text-muted-foreground">за ночь</span>
+					{minPrice.toLocaleString("ru-RU")} <span className="text-sm font-normal text-muted-foreground">за ночь</span>
 				</span>
-				<Button>Бронирвать</Button>
+				<Button asChild>
+					<Link href={`/hotel/${id}`}>Бронирвать</Link>
+				</Button>
 			</CardFooter>
 		</Card>
 	);

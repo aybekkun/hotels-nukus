@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "../globals.css";
+
 import { Navbar } from "@/components/user";
 
-const inter = Inter({ subsets: ["latin"] });
+//import { Toaster } from "@/components/ui";
+
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -15,12 +15,12 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	
 	return (
-		<html lang="en">
-			<body className={`${inter.className}  antialiased`}>
-				<Navbar />
-				<main className="bg-[#FBFBFB] min-h-screen">{children}</main>
-			</body>
-		</html>
+		<>
+			<Navbar />
+			<main className="bg-[#FBFBFB] min-h-screen">{children}</main>
+			{/* 		<Toaster /> */}
+		</>
 	);
 }

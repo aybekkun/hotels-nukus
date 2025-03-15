@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  name  String
+  phone     String    @unique
+  password  String
+  bookings  Booking[]
+  role      Role      @default(USER)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+  OWNER
+}
+
+model Hotel {
+  id Int @id @default(autoincrement())
+
+  name            String
+  address         String
+  hotelFacilities HotelFacilities[]
+  description     String
+  rooms           Room[]
+  images          String[]
+  minPrice        Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HotelFacilities {
+  id Int @id @default(autoincrement())
+
+  hotel   Hotel @relation(fields: [hotelId], references: [id])
+  hotelId Int
+
+  facilitiesItem   FacilitiesItem @relation(fields: [facilitiesItemId], references: [id])
+  facilitiesItemId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([hotelId, facilitiesItemId]) // Гарантирует, что одно удобство не дублируется в одном отеле
+}
+
+model Room {
+  id Int @id @default(autoincrement())
+
+  name       String
+  roomNumber Int
+  capacity   Int
+  price      Int
+
+  hotel   Hotel? @relation(fields: [hotelId], references: [id])
+  hotelId Int?
+
+  category   RoomCategory? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RoomCategory {
+  id Int @id @default(autoincrement())
+
+  name  String
+  rooms Room[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  roomId Int
+  room   Room @relation(fields: [roomId], references: [id])
+
+  startDate DateTime
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roomId, startDate, endDate])
+}
+
+model Facilities {
+  id Int @id @default(autoincrement())
+
+  name  String
+  items FacilitiesItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FacilitiesItem {
+  id           Int         @id @default(autoincrement())
+  name         String
+  facilities   Facilities? @relation(fields: [facilitiesId], references: [id])
+  facilitiesId Int?
+
+  hotelFacilities HotelFacilities[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

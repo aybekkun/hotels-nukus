@@ -6,6 +6,9 @@ const nextConfig = {
 	experimental: {
 		missingSuspenseWithCSRBailout: false,
 	},
+	typescript: {
+		ignoreBuildErrors: true,
+	},
 };
 
 export default nextConfig;

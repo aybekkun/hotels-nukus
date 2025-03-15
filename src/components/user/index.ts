@@ -3,4 +3,7 @@ export { SearchHotel } from "./search-hotel";
 export { UserButtonGroup } from "./user-button-group";
 export { HotelFilter } from "./hotel-filter";
 export { HotelCard } from "./hotel-card";
-export {HotelList } from './hotel-list';
+export { HotelList } from "./hotel-list";
+export { Footer } from "./footer";
+export { ReserveCard } from "./reserve-card";
+export { ImageGallery } from "./image-gallery";

@@ -9,17 +9,33 @@ interface Props {
 	name?: string;
 	items: FilterCheckboxProps[];
 	className?: string;
+	onClickCheckbox?: (id: string) => void;
+	selected?: Set<string>;
 }
 
-export const FilterGroup: FC<Props> = ({ title, items, name, className = `` }) => {
+export const FilterGroup: FC<Props> = ({
+	title,
+	items,
+	name,
+	className = ``,
+	onClickCheckbox = () => undefined,
+	selected = new Set([]),
+}) => {
 	return (
 		<Card className={cn("", className)}>
 			<CardHeader>
-				<Title text={title} size="xs"/>
+				<Title text={title} size="xs" />
 			</CardHeader>
 			<CardContent className="flex flex-col gap-2">
 				{items.map((item) => (
-					<FilterCheckbox key={item.value} name={name} value={item.value} text={item.text} />
+					<FilterCheckbox
+						key={item.value}
+						name={name}
+						value={item.value}
+						text={item.text}
+						onCheckedChange={() => onClickCheckbox(item.value)}
+						checked={selected.has(item.value)}
+					/>
 				))}
 			</CardContent>
 		</Card>
