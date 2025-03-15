@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
 		const user = await prisma.user.findUnique({
 			where: { phone },
 		});
+		
 
 		if (!user) {
 			return NextResponse.json({ error: "Неверные учетные данные" }, { status: 400 });
