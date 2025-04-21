@@ -103,8 +103,8 @@ export const AvailableRooms: FC<Props> = ({ userId, isOpen, onClose, hotelName =
 													onClick={() => setSelectedRoom(room)}
 												>
 													<h3 className="font-semibold">{room.name}</h3>
-													<p>Вместимость: {room.capacity}</p>
-													<p>Цена: ${room.price} за ночь</p>
+													<p>Sig‘imi: {room.capacity}</p>
+													<p>Narx: ${room.price} за ночь</p>
 												</div>
 											))}
 										</div>

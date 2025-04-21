@@ -3,7 +3,7 @@ import { Container } from "../common";
 import { Hotel } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { SearchHotel } from "./search-hotel";
+/* import { SearchHotel } from "./search-hotel"; */
 import { UserButtonGroup } from "./user-button-group";
 
 interface Props {
@@ -18,10 +18,10 @@ export const Navbar: FC<Props> = ({ className = `` }) => {
 					<Hotel className="w-9 h-9" />
 					<div>
 						<h2 className="text-2xl uppercase font-black">Hotel</h2>
-						<p className="text-sm text-gray-400 leading-3">топ отели в городе</p>
+						<p className="text-sm text-gray-400 leading-3">shahardagi eng yaxshi mehmonxonalar</p>
 					</div>
 				</Link>
-				<SearchHotel className="md:block hidden"/>
+			{/* 	<SearchHotel className="md:block hidden"/> */}
 				<UserButtonGroup />
 			</Container>
 		</div>

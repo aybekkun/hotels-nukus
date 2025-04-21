@@ -1,12 +1,18 @@
+// app/rooms/edit/[id]/page.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createRoom, getHotels } from "@/lib/api";
+
 import { Hotel, RoomCategory } from "@prisma/client";
+import { getHotels, getRoom, updateRoom } from "@/lib/api";
 import { CATEGORIES } from "../../../prisma/constants";
-export const AddRoomForm = () => {
+
+export const EditRoomForm = ({ id }: { id: number }) => {
 	const router = useRouter();
+
+	const roomId = id;
+
 	const [formData, setFormData] = useState({
 		name: "",
 		roomNumber: "",
@@ -16,10 +22,10 @@ export const AddRoomForm = () => {
 		categoryId: "",
 	});
 	const [hotels, setHotels] = useState<Hotel[]>([]);
-	const [categories, setCategories] = useState<RoomCategory[]>(CATEGORIES as RoomCategory[]);
-	const [loading, setLoading] = useState(false);
+    const [categories, setCategories] = useState<RoomCategory[]>(CATEGORIES as RoomCategory[]);
+	const [loading, setLoading] = useState(true);
+	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState("");
-
 	useEffect(() => {
 		// Fetch hotels and room categories for the dropdowns
 		const fetchOptions = async () => {
@@ -36,6 +42,44 @@ export const AddRoomForm = () => {
 
 		fetchOptions();
 	}, []);
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Fetch room data
+				const room = await getRoom(roomId);
+				setFormData({
+					name: room.name,
+					roomNumber: String(room.roomNumber),
+					capacity: String(room.capacity),
+					price: String(room.price),
+					hotelId: room.hotelId ? String(room.hotelId) : "",
+					categoryId: room.categoryId ? String(room.categoryId) : "",
+				});
+
+				// Fetch hotels and categories for dropdowns
+				const hotelsResponse = await fetch("/api/hotels");
+				const categoriesResponse = await fetch("/api/room-categories");
+
+				if (hotelsResponse.ok && categoriesResponse.ok) {
+					const hotelsData = await hotelsResponse.json();
+					const categoriesData = await categoriesResponse.json();
+
+					setHotels(hotelsData);
+					setCategories(categoriesData);
+				}
+
+				setLoading(false);
+			} catch (err) {
+				console.error("Error fetching data:", err);
+				setError("Failed to load room data");
+				setLoading(false);
+			}
+		};
+
+		if (roomId) {
+			fetchData();
+		}
+	}, [roomId]);
 
 	const handleChange = (e: any) => {
 		const { name, value } = e.target;
@@ -47,7 +91,7 @@ export const AddRoomForm = () => {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		setLoading(true);
+		setSaving(true);
 		setError("");
 
 		try {
@@ -57,30 +101,32 @@ export const AddRoomForm = () => {
 				roomNumber: parseInt(formData.roomNumber),
 				capacity: parseInt(formData.capacity),
 				price: parseInt(formData.price),
-				hotelId: parseInt(formData.hotelId),
-				categoryId: parseInt(formData.categoryId),
+				hotelId: formData.hotelId ? parseInt(formData.hotelId) : null,
+				categoryId: formData.categoryId ? parseInt(formData.categoryId) : null,
 			};
 
-			await createRoom(roomData);
+			await updateRoom(roomId, roomData);
 			router.push("/admin/rooms");
 			router.refresh(); // Revalidate the rooms list page
 		} catch (err) {
-			console.error("Error creating room:", err);
-			setError("Failed to create room");
+			console.error("Error updating room:", err);
+			setError("Failed to update room");
 		} finally {
-			setLoading(false);
+			setSaving(false);
 		}
 	};
 
+	if (loading) return <div className="p-4">ma’lumotlari yuklanmoqda...</div>;
+
 	return (
 		<div className="p-4 max-w-xl mx-auto">
-			<h1 className="text-2xl font-bold mb-6">Yangi xona yaratish</h1>
+			<h1 className="text-2xl font-bold mb-6">Xonani tahrirlash</h1>
 
 			{error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
 
 			<form onSubmit={handleSubmit} className="space-y-4">
 				<div>
-					<label className="block mb-2">Ism</label>
+					<label className="block mb-2">Nomi</label>
 					<input
 						type="text"
 						name="name"
@@ -133,12 +179,11 @@ export const AddRoomForm = () => {
 						name="hotelId"
 						value={formData.hotelId}
 						onChange={handleChange}
-						required
 						className="w-full px-3 py-2 border rounded"
 					>
-						<option value="">Mehmonxonani tanlash</option>
+						<option value="">Mehmonxonani tanlang</option>
 						{hotels.map((hotel) => (
-							<option key={hotel.id} value={String(hotel.id)}>
+							<option key={hotel.id} value={hotel.id}>
 								{hotel.name}
 							</option>
 						))}
@@ -146,12 +191,11 @@ export const AddRoomForm = () => {
 				</div>
 
 				<div>
-					<label className="block mb-2">Xona toifasi</label>
+					<label className="block mb-2">Xona turkumi</label>
 					<select
 						name="categoryId"
 						value={formData.categoryId}
 						onChange={handleChange}
-						required
 						className="w-full px-3 py-2 border rounded"
 					>
 						<option value="">Turkumni tanlang</option>
@@ -166,10 +210,10 @@ export const AddRoomForm = () => {
 				<div className="flex gap-4">
 					<button
 						type="submit"
-						disabled={loading}
+						disabled={saving}
 						className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
 					>
-							{loading ? "Yaratilmoqda..." : "Mehmonxona yaratish"}
+						{saving ? "Saqlash..." : "O‘zgarishlarni saqlash"}
 					</button>
 
 					<button
@@ -177,7 +221,7 @@ export const AddRoomForm = () => {
 						onClick={() => router.push("/rooms")}
 						className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
 					>
-							Bekor qilish
+						Bekor qilish
 					</button>
 				</div>
 			</form>

@@ -4,34 +4,46 @@ import { FC, useState } from "react";
 import { Button } from "../ui";
 import { Edit, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { deleteHotel } from "@/lib/api";
+import { deleteBooking, deleteHotel, deleteRoom, deleteUser } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 
 interface Props {
 	className?: string;
 	id?: number;
-	type: "hotel" | "room";
+	type: "hotel" | "room" | "user" | "booking";
 }
+const HREF_MAP = {
+	hotel: "/admin/hotels/",
+	room: "/admin/rooms/",
+	user: "/admin/users/",
+	booking: "/admin/bookings/",
+};
+const DELETE_ACTION = {
+	hotel: deleteHotel,
+	room: deleteRoom,
+	user: deleteUser,
+	booking: deleteBooking,
+} as {
+	[key: string]: (id: number) => Promise<void>;
+};
 
 export const ActionButtons: FC<Props> = ({ id = 0, type, className = `` }) => {
 	const router = useRouter();
 	const [deleting, setDeleting] = useState(false);
-
 	const handleDelete = async (id: number) => {
 		setDeleting(true);
 
 		try {
-			await deleteHotel(id);
+			await DELETE_ACTION[type](id);
 			toast({
-				title: "Hotel deleted successfully",
+				title: "deleted successfully",
 			});
-			router.push("/admin/hotels");
+			router.push(HREF_MAP[type]);
 			router.refresh();
 		} catch (error) {
-			console.error("Error deleting hotel:", error);
-			alert("Failed to delete hotel");
-			setDeleting(false);
+			console.error("Error deleting:", error);
+			alert("Failed to delete");
 		} finally {
 			setDeleting(false);
 		}
@@ -39,7 +51,7 @@ export const ActionButtons: FC<Props> = ({ id = 0, type, className = `` }) => {
 	return (
 		<div className={cn("space-x-2", className)}>
 			<Button asChild>
-				<Link href={"/admin/hotels/" + id}>
+				<Link href={HREF_MAP[type] + id}>
 					<Edit />
 				</Link>
 			</Button>

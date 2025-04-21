@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 import { prisma } from "../../prisma/prisma-client";
 import { User } from "@prisma/client";
 
@@ -14,10 +14,19 @@ export async function getUser() {
 	}
 
 	try {
-		const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+		// Создаем TextEncoder для преобразования секретного ключа в Uint8Array
+		const encoder = new TextEncoder();
+		const secretKey = encoder.encode(JWT_SECRET);
+		
+		// Верифицируем токен с помощью jose
+		const { payload } = await jwtVerify(token, secretKey);
+		
+		// Получаем ID из верифицированного токена
+		const id = payload.id as string;
 
+		// Находим пользователя в базе данных
 		const user = await prisma.user.findUnique({
-			where: { id: Number(decoded.id) },
+			where: { id: Number(id) },
 			select: {
 				id: true,
 				phone: true,
@@ -29,7 +38,8 @@ export async function getUser() {
 
 		return user;
 	} catch (error) {
-		return console.log(error);
+		console.log(error);
+		return null;
 	}
 }
 

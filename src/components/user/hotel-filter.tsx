@@ -34,21 +34,21 @@ export const HotelFilter: FC<Props> = ({ className = `` }) => {
 	return (
 		<div className={" flex flex-col gap-4  flex-wrap" + className}>
 			<FilterGroup
-				title="Тип размещения"
+				title="Joylashuv turi"
 				name="placement"
 				onClickCheckbox={toggle}
 				selected={selected}
 				items={[
-					{ text: "Отель", value: "1" },
-					{ text: "Хостел", value: "2" },
-					{ text: "Апартаменты", value: "3" },
-					{ text: "Вилла", value: "4" },
-					{ text: "Курорт", value: "5" },
-					{ text: "Гостевой дом", value: "6" },
+					{ text: "Mehmonxona", value: "1" },
+					{ text: "Xostel", value: "2" },
+					{ text: "Apartamentlar", value: "3" },
+					{ text: "Villa", value: "4" },
+					{ text: "Kurort", value: "5" },
+					{ text: "Mehmon uyi", value: "6" },
 				]}
 			/>
 			<FilterGroup
-				title="Звезды"
+				title="Yulduzlar"
 				name="start"
 				onClickCheckbox={toggle}
 				selected={selected}
@@ -68,54 +68,54 @@ export const HotelFilter: FC<Props> = ({ className = `` }) => {
 				]}
 			/>
 			<FilterGroup
-				title="Тип номера"
+				title="Xona turi"
 				name="room"
 				onClickCheckbox={toggle}
 				selected={selected}
 				items={[
-					{ text: "Одноместный", value: "10" },
-					{ text: "Двухместный", value: "11" },
-					{ text: "Семейный", value: "12" },
-					{ text: "Люкс", value: "13" },
+					{ text: "Bir kishilik", value: "10" },
+					{ text: "Ikki kishilik", value: "11" },
+					{ text: "Oila uchun", value: "12" },
+					{ text: "Lyuks", value: "13" },
 				]}
 			/>
 			<FilterGroup
-				title="Удобства"
+				title="Qulayliklar"
 				name="comfort"
 				onClickCheckbox={toggle}
 				selected={selected}
 				items={[
-					{ text: "Бесплатный Wi-Fi", value: "14" },
-					{ text: "Кондиционер", value: "15" },
-					{ text: "Телевизор", value: "16" },
-					{ text: "Мини-бар", value: "17" },
-					{ text: "Сейф", value: "18" },
-					{ text: "Балкон", value: "19" },
-					{ text: "Парковка", value: "20" },
-					{ text: "Бассейн", value: "21" },
-					{ text: "Спортзал", value: "22" },
-					{ text: "Спа", value: "23" },
+					{ text: "Bepul Wi-Fi", value: "14" },
+					{ text: "Konditsioner", value: "15" },
+					{ text: "Televizor", value: "16" },
+					{ text: "Mini-bar", value: "17" },
+					{ text: "Seyf", value: "18" },
+					{ text: "Balkon", value: "19" },
+					{ text: "Avtoturargoh", value: "20" },
+					{ text: "Hovuz", value: "21" },
+					{ text: "Sport zali", value: "22" },
+					{ text: "Spa", value: "23" },
 				]}
 			/>
 			<FilterGroup
-				title="Питание"
+				title="Ovqatlanish"
 				name="food"
 				onClickCheckbox={toggle}
 				selected={selected}
 				items={[
-					{ text: "Завтрак включен", value: "24" },
-					{ text: "Ресторан на территории", value: "25" },
-					{ text: "Бар", value: "26" },
+					{ text: "Nonushta kiritilgan", value: "24" },
+					{ text: "Hududda restoran", value: "25" },
+					{ text: "Bar", value: "26" },
 				]}
 			/>
 			<FilterGroup
-				title="Особенности"
+				title="Xususiyatlar"
 				name="special"
 				onClickCheckbox={toggle}
 				selected={selected}
 				items={[
-					{ text: "Размещение с животными", value: "27" },
-					{ text: "Для людей с ограниченными возможностями", value: "28" },
+					{ text: "Hayvonlar bilan joylashish", value: "27" },
+					{ text: "Cheklangan imkoniyatlarga ega odamlar uchun", value: "28" },
 				]}
 			/>
 		</div>

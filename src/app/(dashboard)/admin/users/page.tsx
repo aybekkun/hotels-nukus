@@ -1,15 +1,15 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import { prisma } from "../../../../../prisma/prisma-client";
-import { Button, TableCell, TableRow } from "@/components/ui";
+import {  TableCell, TableRow } from "@/components/ui";
 import { getUser } from "@/lib/auth";
 import { ActionButtons } from "@/components/admin";
-import Link from "next/link";
+
 import { DataTable, ServerPagination, SortPopup } from "@/components/common";
 
-const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
+const UsersPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
 	const user = await getUser();
 	const { page, ...queryParams } = searchParams;
-	const query: Prisma.RoomWhereInput = {};
+	const query: Prisma.UserWhereInput = {};
 	const p = page ? parseInt(page) : 1;
 	if (queryParams) {
 		for (const [key, value] of Object.entries(queryParams)) {
@@ -18,15 +18,15 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 					case "search":
 						query.name = { contains: value, mode: "insensitive" };
 						break;
-					case "sort":
-						if (parseInt(value)) {
-							query.categoryId = { equals: parseInt(value) };
+					case "role":
+						if (value !== "0") {
+							query.role = value as Role;
 						}
 
 						break;
 					case "hotel":
 						if (parseInt(value)) {
-							query.hotelId = { equals: parseInt(value) };
+							query.hotel = { id: parseInt(value) };
 						}
 					default:
 						break;
@@ -36,10 +36,9 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 	}
 
 	const [data, hotels, count] = await prisma.$transaction([
-		prisma.room.findMany({
+		prisma.user.findMany({
 			where: query,
 			include: {
-				category: true,
 				hotel: true,
 			},
 			take: 10,
@@ -52,24 +51,25 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 				name: true,
 			},
 		}),
-		prisma.room.count({ where: query }),
+		prisma.user.count({ where: query }),
 	]);
 
 	const hotelsData = hotels.map((item) => ({ value: String(item.id), text: item.name }));
 
 	const columns = [
 		{
-			header: "Название",
+			header: "Имя",
 			accessor: "name",
 		},
 		{
-			header: "Категория",
-			accessor: "category",
+			header: "Телефон",
+			accessor: "phone",
 		},
 		{
-			header: "Отель",
-			accessor: "hotel",
+			header: "Роль",
+			accessor: "role",
 		},
+
 		...(user?.role === "ADMIN"
 			? [
 					{
@@ -84,11 +84,11 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 		return (
 			<TableRow>
 				<TableCell>{item.name}</TableCell>
-				<TableCell>{item.category.name}</TableCell>
-				<TableCell>{item.hotel ? item.hotel.name : ""}</TableCell>
+				<TableCell>{item.phone}</TableCell>
+				<TableCell>{item.role}</TableCell>
 				{user?.role === "ADMIN" && (
 					<TableCell>
-						<ActionButtons id={item.id} type="room" />
+						<ActionButtons id={item.id} type="user" />
 					</TableCell>
 				)}
 			</TableRow>
@@ -97,22 +97,23 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 
 	return (
 		<div>
-			<h2 className="text-3xl font-semibold mb-4">Xonalar ro&apos;yxati</h2>
+			<h2 className="text-3xl font-semibold mb-4">Список пользователей</h2>
 			<div className="flex items-center gap-4 mb-4">
-				<Button asChild variant="outline">
-					<Link href="/admin/rooms/new">Xona qo&apos;shing</Link>
-				</Button>
-				<SortPopup
-					items={[
-						{ text: "Barchasi", value: "0" },
-						{ text: "Standart", value: "1" },
-						{ text: "Lyuks", value: "2" },
-						{ text: "Oilaviy", value: "3" },
-						{ text: "Prezidentlik", value: "4" },
-					]}
-					name="sort"
-				/>
 				<SortPopup name="hotel" items={[{ text: "Все", value: "0" }, ...hotelsData]} />
+				<SortPopup
+					name="role"
+					items={[
+						{ text: "Все", value: "0" },
+						{
+							text: "Администратор",
+							value: Role.ADMIN,
+						},
+						{
+							text: "Владельец",
+							value: Role.OWNER,
+						},
+					]}
+				/>
 			</div>
 
 			<DataTable columns={columns} renderRow={renderRow} data={data} />
@@ -121,4 +122,4 @@ const RoomPage = async ({ searchParams }: { searchParams: { [key: string]: strin
 	);
 };
 
-export default RoomPage;
+export default UsersPage;

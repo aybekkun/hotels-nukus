@@ -16,12 +16,12 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  name  String
+  name      String
   phone     String    @unique
   password  String
   bookings  Booking[]
   role      Role      @default(USER)
-
+  hotel     Hotel?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -33,8 +33,7 @@ enum Role {
 }
 
 model Hotel {
-  id Int @id @default(autoincrement())
-
+  id              Int               @id @default(autoincrement())
   name            String
   address         String
   hotelFacilities HotelFacilities[]
@@ -42,6 +41,9 @@ model Hotel {
   rooms           Room[]
   images          String[]
   minPrice        Int
+
+  hotelOwner   User? @relation(fields: [hotelOwnerId], references: [id])
+  hotelOwnerId Int?  @unique // Каждый отель принадлежит только одному пользователю
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,49 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-import { User } from "@prisma/client";
-import { prisma } from "../prisma/prisma-client";
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key");
 
 export async function middleware(req: NextRequest) {
-	const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
-	if (!isAdminRoute) {
-		return NextResponse.next();
-	}
-	const cookieStore = cookies();
-	const token = cookieStore.get("auth-token")?.value;
+  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+  if (!isAdminRoute) {
+    return NextResponse.next();
+  }
 
-	if (!token) {
-		return null;
-	}
+  const cookieStore = cookies();
+  const token = cookieStore.get("auth-token")?.value;
 
-	try {
-		const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
+  if (!token) {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
 
-		const user = await prisma.user.findUnique({
-			where: { id: Number(decoded.id) },
-			select: {
-				id: true,
-				phone: true,
-				name: true,
-				role: true,
-				bookings: true,
-			},
-		});
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const userRole = payload.role as string;
 
-		if (user?.role !== "ADMIN" && user?.role !== "OWNER") {
-			return NextResponse.redirect(new URL("/sign-in", req.url));
-		}
+    if (userRole !== "ADMIN" && userRole !== "OWNER") {
+      return NextResponse.redirect(new URL("/sign-in", req.url));
+    }
 
-		return NextResponse.next();
-	} catch (error) {
-		console.error("Authentication error:", error);
-		NextResponse.redirect(new URL("/sign-in", req.url));
-	}
+    return NextResponse.next();
+  } catch (error) {
+    console.error("Authentication error:", error);
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
 }
 
 export const config = {
-	matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*"],
 };

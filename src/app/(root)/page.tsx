@@ -1,22 +1,22 @@
-import { Container } from "@/components/common";
-import { HotelFilter, HotelList } from "@/components/user";
-import { Prisma } from "@prisma/client";
-import { prisma } from "../../../prisma/prisma-client";
+import { Container } from "@/components/common"
+import { HotelFilter, HotelList } from "@/components/user"
+import { Prisma } from "@prisma/client"
+import { prisma } from "../../../prisma/prisma-client"
 
 export default async function Home({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
-	const { ...queryParams } = searchParams;
+	const { ...queryParams } = searchParams
 
 	//const p = page ? parseInt(page) : 1;
 
-	const query: Prisma.HotelWhereInput = {};
+	const query: Prisma.HotelWhereInput = {}
 
 	if (queryParams) {
 		for (const [key, value] of Object.entries(queryParams)) {
 			if (value !== undefined) {
 				switch (key) {
 					case "search":
-						query.name = { contains: value, mode: "insensitive" };
-						break;
+						query.name = { contains: value, mode: "insensitive" }
+						break
 					case "filter":
 						if (value.length) {
 							query.AND = value.split(",").map((id) => ({
@@ -25,11 +25,11 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 										facilitiesItemId: parseInt(id),
 									},
 								},
-							}));
+							}))
 						}
-						break;
+						break
 					default:
-						break;
+						break
 				}
 			}
 		}
@@ -39,14 +39,16 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 			where: query,
 		}),
 		prisma.hotel.count({ where: query }),
-	]);
+	])
 
 	return (
 		<>
 			<section className="bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800 pt-10 pb-[100px]">
 				<Container>
-					<h1 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white">Найдите идеальный отель</h1>
-					<p className="text-white text-sm">От дешевых отелей до роскошных номеров и всего, что между ними.</p>
+					<h1 className="text-2xl md:text-4xl lg:text-6xl font-bold text-white">Eng zo&apos;r mehmonxonani toping</h1>
+					<p className="text-white text-sm">
+						Arzon mehmonxonalardan to hashamatli turar joylargacha va ular orasidagi hamma narsa.
+					</p>
 				</Container>
 			</section>
 			<Container className="flex pt-8 flex-col-reverse md:flex-row gap-4 pb-10">
@@ -55,7 +57,7 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 				</div>
 				<div className="w-full">
 					<div className="flex items-center gap-2 justify-between pb-4">
-						<h2 className="text-2xl">Все отели</h2>
+						<h2 className="text-2xl">Barcha mehmonxonalar</h2>
 
 						{/* 		<SortPopup
 							name="sortBy"
@@ -70,5 +72,5 @@ export default async function Home({ searchParams }: { searchParams: { [key: str
 				</div>
 			</Container>
 		</>
-	);
+	)
 }

@@ -1,12 +1,13 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createHotel, getHotel, updateHotel } from "@/lib/api";
-import { CldUploadWidget } from "next-cloudinary";
-import { toast } from "@/hooks/use-toast";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui";
+"use client"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { getHotel, updateHotel } from "@/lib/api"
+import { CldUploadWidget } from "next-cloudinary"
+import { toast } from "@/hooks/use-toast"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../ui"
+import { HotelFilter } from "../user"
 export const EditHotelForm = ({ id }: { id: number }) => {
-	const router = useRouter();
+	const router = useRouter()
 	const [formData, setFormData] = useState<any>({
 		name: "",
 		address: "",
@@ -14,13 +15,13 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 		minPrice: 0,
 		images: [],
 		facilities: [],
-	});
-	const [loading, setLoading] = useState(false);
+	})
+	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
 		async function loadHotel() {
 			try {
-				const hotel = await getHotel(id);
+				const hotel = await getHotel(id)
 				setFormData({
 					name: hotel.name,
 					address: hotel.address,
@@ -28,34 +29,34 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 					minPrice: hotel.minPrice,
 					images: hotel.images.length > 0 ? hotel.images : [""],
 					facilities: hotel.hotelFacilities.map((hf: any) => hf.facilitiesItemId),
-				});
+				})
 			} catch (error) {
-				console.error("Error loading hotel:", error);
-				alert("Failed to load hotel data");
+				console.error("Error loading hotel:", error)
+				alert("Failed to load hotel data")
 			} finally {
-				setLoading(false);
+				setLoading(false)
 			}
 		}
 
-		loadHotel();
-	}, [id]);
+		loadHotel()
+	}, [id])
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		const { name, value } = e.target;
+		const { name, value } = e.target
 		setFormData({
 			...formData,
 			[name]: name === "minPrice" ? parseInt(value) || 0 : value,
-		});
-	};
+		})
+	}
 
 	const handleImageChange = (value: string) => {
 		setFormData((prevState: any) => ({
 			...prevState,
 			images: [...prevState.images, value],
-		}));
-	};
+		}))
+	}
 
 	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
+		e.preventDefault()
 
 		if (
 			!formData.name ||
@@ -67,32 +68,32 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 			toast({
 				title: "Ошибка",
 				description: "Заполните все поля",
-			});
-			return;
+			})
+			return
 		}
-		setLoading(true);
+		setLoading(true)
 		try {
 			// Filter out empty image URLs
-			const filteredImages = formData.images.filter((img: any) => img.trim() !== "");
+			const filteredImages = formData.images.filter((img: any) => img.trim() !== "")
 
 			await updateHotel(id, {
 				...formData,
 				images: filteredImages,
-			});
+			})
 
-			router.push("/admin/hotels");
-      router.refresh();
+			router.push("/admin/hotels")
+			router.refresh()
 		} catch (error) {
-			console.error("Error creating hotel:", error);
-			alert("Failed to create hotel");
+			console.error("Error creating hotel:", error)
+			alert("Failed to create hotel")
 		} finally {
-			setLoading(false);
+			setLoading(false)
 		}
-	};
+	}
 
 	return (
 		<div>
-			<h1 className="text-2xl font-bold mb-6">Edit New Hotel</h1>
+			<h1 className="text-2xl font-bold mb-6">Mehmonxonani tahrirlash</h1>
 			<Carousel className="mb-4 ">
 				<CarouselContent className="rounded-lg">
 					{formData.images.map((img: string) => (
@@ -106,7 +107,7 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 			</Carousel>
 			<form onSubmit={handleSubmit} className="space-y-6">
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">Hotel Name</label>
+					<label className="block text-sm font-medium text-gray-700 mb-1">Mehmonxona nomi</label>
 					<input
 						type="text"
 						name="name"
@@ -118,7 +119,7 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+					<label className="block text-sm font-medium text-gray-700 mb-1">Manzil</label>
 					<input
 						type="text"
 						name="address"
@@ -130,7 +131,7 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+					<label className="block text-sm font-medium text-gray-700 mb-1">Tavsif</label>
 					<textarea
 						name="description"
 						value={formData.description}
@@ -142,7 +143,7 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">Minimum Price per Night ($)</label>
+					<label className="block text-sm font-medium text-gray-700 mb-1">Bir kecha uchun minimal narx</label>
 					<input
 						type="number"
 						name="minPrice"
@@ -155,22 +156,22 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 				</div>
 
 				<div>
-					<label className="block text-sm font-medium text-gray-700 mb-1">Images</label>
+					<label className="block text-sm font-medium text-gray-700 mb-1">Rasmlar</label>
 					<CldUploadWidget
 						uploadPreset="booking-app"
 						onSuccess={(result: any) => {
-							handleImageChange(result.info.secure_url);
+							handleImageChange(result.info.secure_url)
 							toast({
-								title: "Загружены на сервер",
-							});
+								title: "Serverga yuklandi",
+							})
 						}}
 					>
 						{({ open }) => {
 							return (
 								<div className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400" onClick={() => open()}>
-									Upload an Image
+									Rasm yuklash
 								</div>
-							);
+							)
 						}}
 					</CldUploadWidget>
 				</div>
@@ -180,19 +181,19 @@ export const EditHotelForm = ({ id }: { id: number }) => {
 						onClick={() => router.back()}
 						className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
 					>
-						Cancel
+						Bekor qilish
 					</button>
 					<button
 						type="submit"
 						disabled={loading}
 						className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
 					>
-						{loading ? "Creating..." : "Edit Hotel"}
+						{loading ? "Yaratilmoqda..." : "Mehmonxona yaratish"}
 					</button>
 				</div>
 			</form>
 		</div>
-	);
-};
+	)
+}
 
 //handleImageChange(result.info.secure_url as string)

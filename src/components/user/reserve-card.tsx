@@ -19,22 +19,20 @@ export const ReserveCard: FC<Props> = ({ className = ``, minPrice = 0 }) => {
 	const id = params.id;
 	const { user } = useAuth();
 
-
-	
 	return (
 		<>
 			<Card className={cn("", className)}>
 				<CardHeader>
-					<CardTitle>Бронирование отелей</CardTitle>
-					<CardDescription>Забронируйте проживание в нашем отеле</CardDescription>
+					<CardTitle>Mehmonxonalarni bandlash</CardTitle>
+					<CardDescription>Mehmonxonamizda joy band qiling</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div>
-						<label className="leading-none text-sm ">Дата прибытия</label>
+						<label className="leading-none text-sm ">Yetib kelish sanasi</label>
 						<SelectDate name="from" text="YYYY-MM-DD" />
 					</div>
 					<div>
-						<label className="leading-none text-sm ">Дата выхода</label>
+						<label className="leading-none text-sm ">Chiqish sanasi</label>
 						<SelectDate name="to" text="YYYY-MM-DD" />
 					</div>
 					{/* 	<div>
@@ -45,15 +43,15 @@ export const ReserveCard: FC<Props> = ({ className = ``, minPrice = 0 }) => {
 				<CardFooter className="flex flex-col gap-4">
 					<span className="text-sm block font-bold ml-auto">
 						от {minPrice.toLocaleString("ru-RU")}{" "}
-						<span className="text-sm font-normal text-muted-foreground">за ночь</span>
+						<span className="text-sm font-normal text-muted-foreground"> kechasiga</span>
 					</span>
-					{!user && <p className="text-sm ">Авторизируйтесь чтобы забронировать</p>}
+					{!user && <p className="text-sm ">Bandlov qilish uchun kiring</p>}
 					<Button
 						onClick={() => setOpen(true)}
 						disabled={Boolean(!searchParams.get("from")) || Boolean(!searchParams.get("to")) || !user}
 						className="w-full"
 					>
-						Забронировать
+						Bron qilish
 					</Button>
 				</CardFooter>
 			</Card>

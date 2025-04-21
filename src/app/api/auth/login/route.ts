@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { prisma } from "../../../../../prisma/prisma-client";
 
@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
 		const user = await prisma.user.findUnique({
 			where: { phone },
 		});
-		
 
 		if (!user) {
 			return NextResponse.json({ error: "Неверные учетные данные" }, { status: 400 });
@@ -27,16 +26,19 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: "Неверные учетные данные" }, { status: 400 });
 		}
 
-		// Создание JWT токена
-		const token = jwt.sign(
-			{
-				id: user.id,
-				phone: user.phone,
-				role: user.role,
-			},
-			JWT_SECRET,
-			{ expiresIn: "1d" }
-		);
+		// Создание JWT токена с помощью jose
+		const encoder = new TextEncoder();
+		const secretKey = encoder.encode(JWT_SECRET);
+
+		const token = await new SignJWT({
+			id: user.id,
+			phone: user.phone,
+			role: user.role,
+		})
+			.setProtectedHeader({ alg: "HS256" })
+			.setIssuedAt()
+			.setExpirationTime("30d")
+			.sign(secretKey);
 
 		// Установка cookie с токеном
 		cookies().set({

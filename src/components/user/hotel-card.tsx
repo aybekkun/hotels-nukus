@@ -26,12 +26,12 @@ interface Props {
 	description: string;
 }
 
-export const HotelCard: FC<Props> = ({ id, name, images = [], minPrice = 0, className = `` }) => {
+export const HotelCard: FC<Props> = ({ id, name, images = [], minPrice = 0, className = ``, description = "" }) => {
 	return (
 		<Card className={cn("relative", className)}>
-			<Button variant={"outline"} size={"icon"} className="absolute top-2  opacity-45 right-2 z-10 rounded-full">
+			{/* 		<Button variant={"outline"} size={"icon"} className="absolute top-2  opacity-45 right-2 z-10 rounded-full">
 				<Heart />
-			</Button>
+			</Button> */}
 			<Carousel>
 				<CarouselContent>
 					{images.slice(0, 4).map((image, index) => (
@@ -47,14 +47,15 @@ export const HotelCard: FC<Props> = ({ id, name, images = [], minPrice = 0, clas
 				<CardTitle>{name}</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<CardDescription>Очень удоьный отель всеми удобствами</CardDescription>
+				<CardDescription>{description}</CardDescription>
 			</CardContent>
 			<CardFooter className="flex items-center justify-between">
 				<span className="text-sm font-bold">
-					{minPrice.toLocaleString("ru-RU")} <span className="text-sm font-normal text-muted-foreground">за ночь</span>
+					{minPrice.toLocaleString("ru-RU")}{" "}
+					<span className="text-sm font-normal text-muted-foreground">sum kechaga</span>
 				</span>
 				<Button asChild>
-					<Link href={`/hotel/${id}`}>Бронирвать</Link>
+					<Link href={`/hotel/${id}`}>Bron qilish</Link>
 				</Button>
 			</CardFooter>
 		</Card>

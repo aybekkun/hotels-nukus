@@ -10,13 +10,13 @@ async function up() {
 	// 		password: "12345678",
 	// 	},
 	// });
-	for (const item of HOTELS) {
-		await prisma.hotel.create({
-			data: {
-				...item,
-			},
-		});
-	}
+	// for (const item of HOTELS) {
+	// 	await prisma.hotel.create({
+	// 		data: {
+	// 			...item,
+	// 		},
+	// 	});
+	// }
 	for (const item of CATEGORIES) {
 		await prisma.roomCategory.create({
 			data: {
@@ -25,18 +25,18 @@ async function up() {
 		});
 	}
 
-	for (const item of ROOMS) {
-		await prisma.room.create({
-			data: {
-				capacity: item.capacity,
-				name: item.name,
-				roomNumber: item.roomNumber,
-				price: item.price,
-				hotelId: item.hotelId,
-				categoryId: item.categoryId,
-			},
-		});
-	}
+	// for (const item of ROOMS) {
+	// 	await prisma.room.create({
+	// 		data: {
+	// 			capacity: item.capacity,
+	// 			name: item.name,
+	// 			roomNumber: item.roomNumber,
+	// 			price: item.price,
+	// 			hotelId: item.hotelId,
+	// 			categoryId: item.categoryId,
+	// 		},
+	// 	});
+	// }
 	for (const item of FACILITIES) {
 		await prisma.facilities.create({
 			data: {
@@ -54,9 +54,9 @@ async function up() {
 		});
 	}
 
-	await prisma.hotelFacilities.createMany({
-		data: HOTEL_FACILITIES,
-	});
+	// await prisma.hotelFacilities.createMany({
+	// 	data: HOTEL_FACILITIES,
+	// });
 }
 
 async function down() {

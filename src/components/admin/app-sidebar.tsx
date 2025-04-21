@@ -1,7 +1,6 @@
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarFooter,
 	SidebarGroup,
 	SidebarHeader,
 	SidebarGroupContent,
@@ -9,9 +8,10 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-	Button,
+
 } from "@/components/ui";
-import { Building2, DoorOpen, Home, Hotel, LogOut, Settings, Users } from "lucide-react";
+import { Building2, DoorOpen,  Hotel, Users } from "lucide-react";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -31,14 +31,9 @@ const items = [
 		icon: Users,
 	},
 	{
-		title: "Hotel Owners",
-		href: "/admin/owners",
+		title: "Bookings",
+		href: "/admin/bookings",
 		icon: Building2,
-	},
-	{
-		title: "Settings",
-		href: "/admin/settings",
-		icon: Settings,
 	},
 ];
 
@@ -54,10 +49,10 @@ export function AppSidebar() {
 							{items.map((item) => (
 								<SidebarMenuItem key={item.title}>
 									<SidebarMenuButton asChild>
-										<a href={item.href}>
+										<Link href={item.href}>
 											<item.icon />
 											<span>{item.title}</span>
-										</a>
+										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
 							))}
@@ -65,7 +60,7 @@ export function AppSidebar() {
 					</SidebarGroupContent>
 				</SidebarGroup>
 			</SidebarContent>
-			<SidebarFooter className="border-t border-border p-4">
+		{/* 	<SidebarFooter className="border-t border-border p-4">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
 						<div>
@@ -77,7 +72,7 @@ export function AppSidebar() {
 						<LogOut className="h-5 w-5" />
 					</Button>
 				</div>
-			</SidebarFooter>
+			</SidebarFooter> */}
 		</Sidebar>
 	);
 }

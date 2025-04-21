@@ -1,25 +1,25 @@
-import { Prisma } from "@prisma/client";
-import { prisma } from "../../../../../prisma/prisma-client";
-import { ServerPagination, DataTable } from "@/components/common";
-import { Button, TableCell, TableRow } from "@/components/ui";
-import { getUser } from "@/lib/auth";
-import { ActionButtons } from "@/components/admin";
-import Link from "next/link";
+import { Prisma } from "@prisma/client"
+import { prisma } from "../../../../../prisma/prisma-client"
+import { ServerPagination, DataTable } from "@/components/common"
+import { Button, TableCell, TableRow } from "@/components/ui"
+import { getUser } from "@/lib/auth"
+import { ActionButtons } from "@/components/admin"
+import Link from "next/link"
 
 const HotelPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
-	const user = await getUser();
-	const { page, ...queryParams } = searchParams;
-	const query: Prisma.HotelWhereInput = {};
-	const p = page ? parseInt(page) : 1;
+	const user = await getUser()
+	const { page, ...queryParams } = searchParams
+	const query: Prisma.HotelWhereInput = {}
+	const p = page ? parseInt(page) : 1
 	if (queryParams) {
 		for (const [key, value] of Object.entries(queryParams)) {
 			if (value !== undefined) {
 				switch (key) {
 					case "search":
-						query.name = { contains: value, mode: "insensitive" };
-						break;
+						query.name = { contains: value, mode: "insensitive" }
+						break
 					default:
-						break;
+						break
 				}
 			}
 		}
@@ -33,7 +33,7 @@ const HotelPage = async ({ searchParams }: { searchParams: { [key: string]: stri
 			orderBy: { createdAt: "desc" },
 		}),
 		prisma.hotel.count({ where: query }),
-	]);
+	])
 
 	const columns = [
 		{
@@ -56,7 +56,7 @@ const HotelPage = async ({ searchParams }: { searchParams: { [key: string]: stri
 					},
 			  ]
 			: []),
-	];
+	]
 
 	const renderRow = (item: any) => {
 		return (
@@ -70,19 +70,19 @@ const HotelPage = async ({ searchParams }: { searchParams: { [key: string]: stri
 					</TableCell>
 				)}
 			</TableRow>
-		);
-	};
+		)
+	}
 
 	return (
 		<div>
-			<h2 className="text-3xl font-semibold mb-4">Список отелей</h2>
+			<h2 className="text-3xl font-semibold mb-4">Mehmonxonalar ro&apos;yxati</h2>
 			<Button asChild variant="outline" className="mb-4">
-				<Link href="/admin/hotels/new">Добавить отель</Link>
+				<Link href="/admin/hotels/new">Mehmonxona qo&apos;shing</Link>
 			</Button>
 			<DataTable columns={columns} renderRow={renderRow} data={data} />
 			<ServerPagination count={count} />
 		</div>
-	);
-};
+	)
+}
 
-export default HotelPage;
+export default HotelPage
